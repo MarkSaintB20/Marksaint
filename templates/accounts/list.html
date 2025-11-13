@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h4">Credenciais monitoradas</h1>
+  <a class="btn btn-primary" href="{{ url_for('accounts_create') }}">Nova credencial</a>
+</div>
+
+<form class="row g-3 mb-4">
+  <div class="col-md-5">
+    <label class="form-label text-muted small">Pesquisa rápida</label>
+    <input type="search" class="form-control" placeholder="Buscar por e-mail ou app" name="q" value="{{ query or '' }}" />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label text-muted small">Filtro de rotação</label>
+    <select class="form-select" name="status">
+      <option value="all" {{ 'selected' if status == 'all' else '' }}>Todos</option>
+      <option value="healthy" {{ 'selected' if status == 'healthy' else '' }}>Em dia</option>
+      <option value="due" {{ 'selected' if status == 'due' else '' }}>Atrasados</option>
+    </select>
+  </div>
+  <div class="col-md-2 align-self-end">
+    <button class="btn btn-outline-secondary w-100" type="submit">Aplicar</button>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Aplicativo</th>
+        <th>Email</th>
+        <th>Última rotação</th>
+        <th>Notas</th>
+        <th class="text-end">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for account in accounts %}
+      <tr>
+        <td>{{ account.app_name }}</td>
+        <td>{{ account.email }}</td>
+        <td>{{ account.last_rotation | rotation_status }}</td>
+        <td>{{ account.notes or '-' }}</td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('accounts_edit', account_id=account.id) }}">Editar</a>
+          <form method="post" action="{{ url_for('accounts_delete', account_id=account.id) }}" class="d-inline" onsubmit="return confirm('Excluir credencial?');">
+            <button class="btn btn-sm btn-outline-danger">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" class="text-center text-muted">Nenhuma credencial cadastrada.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
