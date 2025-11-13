@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Total de credenciais</h5>
+        <p class="display-6">{{ total_accounts }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Rotações pendentes (&gt; {{ PASSWORD_ROTATION_DAYS }} dias)</h5>
+        <p class="display-6 text-danger">{{ rotation_due }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>E-mails monitorados</h5>
+        <p class="display-6">{{ total_emails }}</p>
+        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('emails_list') }}">Abrir diretório</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>E-mails sem uso</h5>
+        <p class="display-6 text-warning">{{ unused_emails }}</p>
+        <p class="text-muted small mb-0">Direcione-os rapidamente para novos projetos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Exportação segura</h5>
+        <p class="text-muted">Crie backups criptografados para incidentes.</p>
+        <a class="btn btn-outline-primary" href="{{ url_for('export_data') }}">Exportar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4">Alertas de vulnerabilidade</h2>
+    <a class="btn btn-sm btn-primary" href="{{ url_for('accounts_list') }}">Gerenciar credenciais</a>
+  </div>
+  {% if insights %}
+  <div class="row g-3">
+    {% for alert in insights %}
+    <div class="col-md-6">
+      <div class="card card-risk-{{ alert.severity }} shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ alert.label }}</h5>
+          <p class="card-text">{{ alert.description }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-success">Nenhum risco identificado. Continue seguindo as boas práticas.</div>
+  {% endif %}
+</section>
+
+<section class="mt-5">
+  <h2 class="h4">Boas práticas recomendadas</h2>
+  <ul class="list-group list-group-numbered">
+    {% for tip in best_practices %}
+    <li class="list-group-item">{{ tip }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,50 @@
+body {
+  min-height: 100vh;
+}
+
+.alerts-stack {
+  position: sticky;
+  top: 1rem;
+  z-index: 999;
+}
+
+.card-risk-high {
+  border-left: 4px solid #dc3545;
+}
+
+.card-risk-medium {
+  border-left: 4px solid #ffc107;
+}
+
+.card-risk-low {
+  border-left: 4px solid #198754;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.usage-indicator {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
+.usage-indicator-used {
+  background: #198754;
+}
+
+.usage-indicator-unused {
+  background: #ffc107;
+}
+
+.usage-row-used td {
+  border-left: 4px solid rgba(25, 135, 84, 0.35);
+}
+
+.usage-row-unused td {
+  border-left: 4px solid rgba(255, 193, 7, 0.35);
+}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h4 mb-4">{{ 'Editar' if profile else 'Novo' }} e-mail</h1>
+<form method="post" class="row g-3">
+  <div class="col-md-6">
+    <label class="form-label">Endereço</label>
+    <input type="email" class="form-control" name="address" required value="{{ profile.address if profile else '' }}" />
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Responsável</label>
+    <input type="text" class="form-control" name="owner" value="{{ profile.owner if profile else '' }}" />
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Finalidade principal</label>
+    <input type="text" class="form-control" name="purpose" value="{{ profile.purpose if profile else '' }}" />
+    <div class="form-text">Mapeie aplicativos, squads ou fluxos que utilizarão este endereço.</div>
+  </div>
+  <div class="col-12">
+    <label class="form-label">Notas adicionais</label>
+    <textarea class="form-control" rows="3" name="notes">{{ profile.notes if profile else '' }}</textarea>
+  </div>
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a class="btn btn-secondary" href="{{ url_for('emails_list') }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

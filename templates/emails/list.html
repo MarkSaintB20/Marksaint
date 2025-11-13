@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+  <div>
+    <h1 class="h4 mb-1">Diretório de e-mails</h1>
+    <p class="text-muted small mb-0">Visão clara de quais contas já foram utilizadas e onde estão vinculadas.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('emails_create') }}">Registrar e-mail</a>
+</div>
+
+<form class="row g-3 align-items-end mb-4">
+  <div class="col-md-6">
+    <label class="form-label text-muted small">Pesquisa rápida</label>
+    <input
+      type="search"
+      class="form-control"
+      name="q"
+      placeholder="Buscar por endereço, responsável ou finalidade"
+      value="{{ query or '' }}"
+    />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label text-muted small">Status de uso</label>
+    <select class="form-select" name="status">
+      <option value="all" {{ 'selected' if status == 'all' else '' }}>Todos</option>
+      <option value="used" {{ 'selected' if status == 'used' else '' }}>Em uso</option>
+      <option value="unused" {{ 'selected' if status == 'unused' else '' }}>Sem uso</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-outline-secondary w-100" type="submit">Filtrar</button>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Endereço</th>
+        <th>Aplicações vinculadas</th>
+        <th>Responsável / Finalidade</th>
+        <th class="text-end">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for profile in profiles %}
+      {% set usage = 'used' if profile.accounts else 'unused' %}
+      <tr class="usage-row usage-row-{{ usage }}">
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <span class="usage-indicator usage-indicator-{{ usage }}" title="{{ 'E-mail já utilizado' if usage == 'used' else 'E-mail ainda não utilizado' }}"></span>
+            <div>
+              <div class="fw-semibold">{{ profile.address }}</div>
+              <div class="small text-muted">{{ 'Em uso' if usage == 'used' else 'Ainda sem uso' }}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="d-flex flex-wrap gap-2">
+            {% for account in profile.accounts %}
+            <a class="badge bg-secondary text-decoration-none" href="{{ url_for('accounts_list') }}?q={{ account.app_name }}">{{ account.app_name }}</a>
+            {% else %}
+            <span class="text-muted small">Nenhum vínculo registrado.</span>
+            {% endfor %}
+          </div>
+        </td>
+        <td>
+          <div class="small text-muted">{{ profile.owner or 'Responsável não informado' }}</div>
+          <div>{{ profile.purpose or profile.notes or '-' }}</div>
+        </td>
+        <td class="text-end">
+          <div class="btn-group" role="group">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('emails_edit', profile_id=profile.id) }}">Editar</a>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('accounts_list') }}?q={{ profile.address }}">Ver credenciais</a>
+            <form
+              method="post"
+              action="{{ url_for('emails_delete', profile_id=profile.id) }}"
+              class="d-inline"
+              onsubmit="return confirm('Excluir este e-mail do diretório?')"
+            >
+              <button class="btn btn-sm btn-outline-danger" {% if profile.accounts %}disabled title="Existe vínculo ativo"{% endif %}>
+                Remover
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" class="text-center text-muted">Nenhum e-mail cadastrado.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

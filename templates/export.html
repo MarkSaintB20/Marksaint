@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h4 mb-3">Exportação criptografada</h1>
+        <p class="text-muted">
+          Gere um pacote protegido com senha contendo todas as credenciais. O arquivo utiliza
+          PBKDF2 + Fernet e pode ser compartilhado com o CSIRT mediante a frase-senha definida abaixo.
+        </p>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Frase-senha</label>
+            <input type="password" class="form-control" name="passphrase" minlength="10" required />
+          </div>
+          <button class="btn btn-primary">Exportar dados</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

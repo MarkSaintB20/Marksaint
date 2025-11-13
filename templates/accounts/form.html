@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h4 mb-4">{{ 'Editar' if account else 'Nova' }} credencial</h1>
+<form method="post" class="row g-3">
+  <div class="col-md-6">
+    <label class="form-label">Aplicativo</label>
+    <input type="text" class="form-control" name="app_name" required value="{{ account.app_name if account else '' }}" />
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Email corporativo</label>
+    <input
+      type="email"
+      class="form-control"
+      name="email"
+      list="emailDirectory"
+      required
+      value="{{ account.email if account else '' }}"
+    />
+    <datalist id="emailDirectory">
+      {% for profile in email_profiles or [] %}
+      <option value="{{ profile.address }}"></option>
+      {% endfor %}
+    </datalist>
+    <div class="form-text">Selecione um endereço existente ou cadastre um novo em "E-mails".</div>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Senha</label>
+    <input type="text" class="form-control" name="password" required value="{{ account.decrypt_password() if account else '' }}" />
+    <div class="form-text">Armazenada com criptografia AES-256 (Fernet).</div>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Última rotação</label>
+    <input type="date" class="form-control" name="last_rotation" required value="{{ account.last_rotation.isoformat() if account else '' }}" />
+  </div>
+  <div class="col-12">
+    <label class="form-label">Notas</label>
+    <textarea class="form-control" name="notes" rows="3">{{ account.notes if account else '' }}</textarea>
+  </div>
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a class="btn btn-secondary" href="{{ url_for('accounts_list') }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}
